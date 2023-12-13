@@ -1,0 +1,1361 @@
+what is aws:-
+  *amazon web service 
+  *It is a cloud computing service offered by amazon
+  *aws is the worlds most comprehensive and broadly adopted cloud platform
+  
+infrastructure:-
+  ==>server (EC2) 
+  ==>storage (S3) 
+  ==>security (IAM)  
+  ==>database (RDS) 
+  ==>network (VPC) 
+  ==>and application 
+
+what is ON-PREMISES:-
+  ==>It is phyical (service) server which is setup in local by server admin.
+     (buying/deploying and managing always manual and need more man-effort
+     CHANCESS OF HUMAN ERROR IS VERY HIGH
+     
+what aws provides:-
+  ==>aws provides combination of 
+  *infrastructure as a service (IASS) (just virtual server rest all installation will do by us)
+  *platform as a service (PASS) (virtual server with some )
+  *software as a service (SAAS) (youtube,facebook,twitter) 
+  
+
+what is cloud computing:-
+   *it is a Virtual Technology
+   *cloud computing is ondemand delivery of IT resources and applications over the internet with pay-as-you-go pricing
+   *combination of services which as available in cloud
+   
+benefits of cloud computing:-
+    ==>No wastage of time
+    ==>We can reduce man power 
+    ==>High availability assurance of data
+    ==>No need big budjet to start bussiness
+    ==>increasing speed and ability
+    ==>we can go global in a minute
+    
+How will you secure the EC2 instance:-
+    ==>by enabling stop,shutdown,termination options for EC2 instance we can protect the EC2 instance.
+EC2
+what is ec2 instance:-
+   *stands for resizeable elastic compute cloud 
+   *combination of AMI(os)+instance size(cpu+ram)+storage+security groups+n/w access card.  
+   *resizeable cloud computing creation over the internet is called EC2
+   
+   *Goal 
+     ==>makes developers job easy.....avoids unnecessary wastage of time for setup..
+   *benefits
+     ==>cost-effect,avoid more man effect,high-availablity assurance,easier & faster,resizeable and elastic.
+     
+what is ondemand instance:- 
+   *ondemand instance is nothing but as per our requirement we can launch the instance 
+   *and we can use it and once the requirement is done we can pay the amount for the instance usage and trash it.
+ 
+types of AWS instances:-
+   *general purpose (initial level develope or testing) 
+   *compute optimized (cpu-based) 
+   *memory optimized (memory-based)
+   *accelerated computing (for better computing power)
+   *storage optimized (i/o high)
+   
+   *c4.large 
+   *c--->instance family
+   *4--->instance generation
+   *large--->instance size
+   
+what are the EC2 options:-
+   *on-demand instances (no long term commitments)(testing developing purpose we can choose) (pay per second)
+   
+   *reserved instances (aggrement for several [1-3] years so we can get significiant discount)
+   
+   *spot instances (reqesting unused EC2 instances,which can reduce your amazon EC2 costs significiantly)
+   
+   *dedicated hosts(no one will use full rack will be available for us only)
+   
+   *dedicated instances (pay by the hour for instances that run on single-tenent hardware). 
+   
+what is 2/2 check:-
+   *it denotes the h/w and s/w health status
+ 
+can we add multiple security groups in to one instance 
+   *yes we can add 
+ 
+VOLUMES:-
+   *check the volumes by using lsblk and check mount point before increasing it 
+   *before creating the new volume should check instance availability zone
+ 
+ 
+============================================================================
+EBS (elastic block storage )
+TYPES
+   *SSD 
+     ==>general purpose SSD (gp2) (3 iops per gb,by default 100 iops comes) (when we increase the disk size iops will increse automatically 
+     ==>provisioned IOPS SSD (io1) (min iops 100,max 50 iops per GB) 
+ (when we create the instance with provosion disk it will give 50 iops per gb.when we increase the disk we should increse manually) 
+   
+   *magnetic
+     ==>througput optimized (st1)
+     ==>cold HDD (sc1)
+     ==>magnetic standard 
+     
+    *SSD - IOPS (i/p o/p per second)
+    *magnetic MB/sec
+    
+    *root volume naming convention : /dev/sda or /dev/sda1
+                                     /dev/xvda or /dev/xvda1
+                                     
+    *througput optimized and cold HDD : not be as a root volume
+    
+    *if you want magnetic volume as a root you can go for magnetic standard
+    
+    *by default root volume not be encrypted.need third party tool like bit locer to encrypt root volume
+      ==>additional volumes are encrypted default 
+ 
+    *there are multiple regions in an one account
+      ==>each regions has multiple available zones 
+      ==>each availability zones has it's own data center     
+
+EBS VOLUMES:-
+    *go to aws console choose ec2 section
+                 |                                         
+     go to volumes -> create volume (vol and ins should be same availability zone)
+                   (if you want to attach volume to one of the instance volume should create same availability zone)
+                 |
+       select storage type --> select size you want --> select volume availability zone 
+                 |
+       don't enable encryption (if you enable encryption it will be chargeable)
+       
+how to check weather the volumes are inuse stat or available stat:-
+    *in volumes section state will show us weather the volumes in use or available 
+
+how to add volumes to instances:-
+    *go to volumes --> select the volume --> actions --> attache vol
+                 |
+        select instance which is needs additional volume
+             (externally volume naming convention is /dev/sdf internally it's showing as /dev/xvdf                                          
+                 |      
+       create mount point (mkdir /mount point)
+                 |
+       attach fie system to the volume (mkfs -t (f.s)(vol) )
+                 |
+       mount volume to mount point(mount (volume) (mount point)
+                 |
+       if you want to mount it permanantly use /etc/fstab file 
+       
+detach volume from instance:-
+       unmount the volume from mount point(umount /mount point)
+              (once you unmount the volume there is no data will be available in mount point)
+                           
+why we detach the volume:-
+       *when ever we detach the volume must should unmout the volume from mount point. 
+       *if we want to take backup anyone of the volume.volume should detach from instnce 
+         bcz while taking the backup there is no data transaction (i/o operation) will happen in the volume
+                              
+what is snapshot:- 
+       *backup of the the volume 
+       *snapshot can be copy to another region (should encrypt formate)
+       *snapshot can be share to other aws account 
+       *using snapshot we can create image and volume
+       
+what is the need of snap to vol:-
+       *if we want to add one of existing volume with another instance we can add if it \is same availability zone
+       *in our case volume and instance both are in different zone.so we should create snap and create vol from snap 
+       *while create the volume select the zone where you want to create the vol.then attach the vol to your instance)       
+       
+       ==>volume to snapshot we can able to create in same availability zone 
+       ==>snap to vol we can able to create different availability zone
+       
+how to encrypt EBS volume:-
+       *create snapshot from volume
+       *then create volume as encrypted formate from snap (instance and creating volume should be in same region)
+       
+how to make EC2 instance root volume as a encrypted:-
+       *create snap from instance root volume
+       *create volume with encrypted formate from snapshot and 
+       *craete image from snapshot
+       *now create instance using image which you created        
+       
+                  
+what is file system:-
+       *file system is way to organize on how used to store the data
+types of file system 
+LUNX 
+       *ext4 XFS
+WINDOWS 
+       *NTFS FAT32
+	
+==========================================================================================================
+AMI-amazon machine image:-
+     *AMI if we plan to make existing server setup in same region or different region we can go for AMI 
+     *we can create AMI in same region and can copy with accross region.while we copy to accross region it should be encrypted formate.
+     *AMI is a backup of an entire EC2 instance.including all attached EBS volumes.
+     
+can we create ami from running instance:-
+     *yes,we can take AMI either running or stopped instance
+     
+     
+     
+========================================================================================================== 
+ how to resize the root volume without rebooting system:-
+    *extend the partition using growpart command and specify the partion name
+    *extend the filesystem using resize2fs partion name
+ 
+==========================================================================================================
+AWS services:-
+    *security (aws IAM,NACLs,security groups)
+    *networking (ELB,VPC)
+    *servers (AMI,Amazon EC2 instances)
+    *storage and database (A-EBS,A-EFS,A-S3,A-RDS)
+    *Monitoring (cloudwatch,cloudtrail) 
+    *DNS (Route-53)
+    
+understanding public private and hybrid cloud model:-
+    *private (our own)
+    *public  (google youtube amazon microsoft)
+    *hybrid  (combination of public and private cloud computing)
+    
+understanding IASS PASS & SAAS:-
+    *IAAS infrastructure as a service (network architect)
+    *PAAS platform as a service (developers)
+    *SAAS software as a service (gmail playstore istore) (end user)
+    
+=============================================================================================================    
+    
+(1) IAM
+what is IAM:-
+    *which i stands for identity and access management,
+    *it's basically global service,
+    *is a service provided by AWS that let's you control access to your aws resources,
+    *we can use IAM,to control who is authenticated and authorized to use resources,
+    
+waht does IAM give us:-
+    *it gives fine grained access control to AWS resources
+    *multi-factor authentication
+    *manage access control for mobile applications with web identity providers.
+
+different between roles and policies:-
+ROLES:- 
+    *IAM Roles manage who has access to your AWS resources
+    *if we have multiple aws accounts,if we want to access another aws account resource we can access by creating the roles.
+    *roles can attach with instance
+    *without sharing the credentials we can access the aws resource via cli.
+POLICIES:-
+    *whereas IAM policies control their permissions
+    *policy's can attach with IAM users and roles
+    *then we can attach the access and secret access keys in to the instance using (aws configure)
+    *IAM polices can attache to iam users,groups and roles.
+    
+creation of IAM user:-
+    ==>go to IAM -->users-->add user-->provide user name-->Select AWS credential type (both)
+                                        |
+          console password (auto generated or custom password)
+                                        |
+          set permissions(Add user to group)(Copy permissions from existing user)(Attach existing policies directly)
+                                        |
+                        choose permission as per our requirement
+                                        |
+                                   create tag
+                                        |
+                                   review the user creation
+                                        |
+                                    create user
+                                        |
+                         before close the user creation save the credentials    
+                         
+INSTALLATION OF AWS CLI:-
+     https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+     *curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+     *unzip awscliv2.zip
+     *sudo ./aws/install
+     configure using acess and secret access key
+     *aws configure 
+        provide access key 
+        provide secret access key
+        
+manual EC2 start and stop using AWS CLI:-
+     *aws ec2 start-instances --instance-ids (instance-id) (start instance via CLI)      
+     *aws ec2 stop-instances --instance-ids (instance-id) (stop instance via CLI) 
+     *aws ec2 terminate-instances --instance-ids (instance-id) (terminate instance via CLI)
+     
+cron schedule for automate start stop EC2 instance:-
+     *EX:-“At 12:30 on day-of-month 18 and on Tuesday in July.” (IST 12:30+5:30 = 06:00pm)
+     *30 12 18 7 2 aws ec2 start-instances --instance-ids (instance-id) (schedule for EC2 start)
+     *40 12 18 7 2 aws ec2 stop-instances --instance-ids (instance-id) (schedule for EC2 stop)
+     *50 12 18 7 2 aws ec2 terminate-instances --instance-ids (instance-id)
+     
+     
+Are root users and IAM users the same:-
+     *No, the root user is also called the master user. 
+     *The IAM user is subset of the root user.
+
+How authentication is controlled in the IAM service:-
+     *You can mange the users, 
+     *You can control access keys, passwords, multifactor authentication.
+     *Manages federated users.
+
+What is Authorization in terms of AWS IAM service:-
+     *It’s to provide authorization for certain AWS resources – not all.
+     *the best example is providing read-only access to the ‘S3’ service.
+
+How to control Authorization in AWS IAM:-
+     *You can control authorization by creating policies.
+
+What are the 5 top security credentials in AWS IAM:-
+     *User-id and Password
+     *E-mail address and Password
+     *Access Keyes
+     *Key pair
+     *Multi-factor authentication
+
+what is IAM users:-
+     *an IAM user interact with your AWS resources from the AWS console and the AWS CLI 
+     *by default,a new IAM user has no access to any AWS resources
+
+what is IAM groups:-
+     *IAM groups consists of IAM users and permissions assigned to those users
+   
+what is IAM roles:-
+     *iam role is an user with a specific set of a permissions      
+     
+
+======================================================================================================
+S3-simple storage service (object based storage from the cloud)  (global service)
+     *object based storage (ex-google drive we can upload all type of files but can't install any software)
+     *block based storage 
+   
+what is s3:-
+     *s3 provides developers and IT teams with secure,durable,fast,highly scalable storage
+     *the data is spread across multiple facilities and devices(stored data across multile data centers)
+     *allows you to upload files
+     *files are stored in buckets
+     *size of single file can be from 0 bytes to 5TB
+     *there is unlimited storage
+      
+what is versioning:-
+     *by default versioning is not enabled for buckets when you created
+     *it's automatically keep ups with different versions of the same object in the same bucket
+     *versioning keeping multiple variants of an object in the same bucket
+     *by enabling the the versioning we can preserver,retrive every version of every objects stored in buckets
+advantage is    
+     *easy role back to previouse version
+     
+s3 specific bucket access policy configuration:-
+     {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                        "s3:GetBucketLocation",
+                        "s3:ListAllMyBuckets"
+                      ],
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::YOUR-BUCKET",
+                "arn:aws:s3:::YOUR-BUCKET/*"
+            ]
+        }
+    ]
+}
+
+s3 specific bucket access policy configuration with denied list access in CLI:-
+    {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetBucketLocation",
+                "s3:ListBucket"
+            ],
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::bucket_name",
+                "arn:aws:s3:::bucket_name/*"
+            ]
+        }
+    ]
+}
+
+s3-bucket commands:-
+upload file from local to s3 bucket:-
+     *aws s3 cp (f.n) s3://bkt.name/
+     
+download file from s3 to local:-
+     *aws s3 cp s3://bckt.name/ file path to save 
+     
+copy folder to aws account:-
+     *create folder under bucket
+     *aws s3 sync folder s3://bkt.name/folder/
+     
+download specific folder from s3 bucket:-
+     *aws s3 cp s3://bkt.name/folder/ directory --recursive
+               
+does empty s3 bucket chargeable:-
+     *Empty S3 buckets don't cost anything
+     *you are only charged by the size of the objects in the bucket,
+   
+what is the bucket policy necessary:-
+     *to allow bucket access to multiple users 
+  
+difference b/w s3 bucket policy and IAM policy and roles?
+     *bucket policy can attach with s3 bucket only 
+     *where as IAM policy can attach with iam users,groups,and roles
+     *roles can be attached with aws instances.roles is nothing but group of policies.
+     *without sharing the access key and secret access key we can access the aws resources via cli
+   
+what is bucket policy?
+     *it's is an object 
+     *that allows you to manage access to specific s3 bucket resources
+     *using s3 bucket policy we can specify permissions for each resource to allow or deny actions requested by principles.
+   
+difference between s3 and EBS
+S3
+     *object based storage,also it is global servie 
+     *designed for storing large size of files 
+     *single file can be upto 5TB.there is unlimited 
+     *s3 is accessed via internet by api's 
+     *s3 stores the data accross multiple availability zone         
+EBS
+     *block based storage 
+     *for AWS ec2 compute instances 
+     *EBS similar to hard drives attached to your computer or laptop
+     *EBS can be accessed by instance 
+     *EBS stores data in single availability zone. 
+      
+s3 storage classes:-
+
+======================================================================================================
+RDS:- Relational Database service
+     *Databases are used to store, manage, and retrieve information in a structured format,          
+     *making it easier for applications and users to interact with the data.
+     *Databases are a fundamental component of most software applications
+
+======================================================================================================    
+what is ELB?
+
+      *ELB and ASG distriburtes the traffic to available resources
+      *enables parallel processing 
+      *so we assure fastest performance of the application
+      *customer satisfaction ration would be high
+      
+Application Load BAlancer:-
+      *protocol:- http https
+      *osi layer:- Application Layer
+      *1elb = many instances 
+      *routing mechanism:- path based mechanism
+      *98% industry adoption
+      
+            
+      
+      *user------->webserver--------->load balancer
+                                            |    
+                             --------------------------------------
+                             |       |      |       |      |      |
+                            ec2     ec2    ec2     ec2    ec2     ec2
+      *load balancer basically allows you to balance the load accross the multiple ec2 instances    
+      *the traffic which is comming from outside the world load balancer will distributed the traffic equally
+
+Elb Creation:
+      *select type of load balancer
+      *create load balancer 
+      *target group   
+      *register instances
+      *add listener
+      
+work flow of different domain name for single application using ELB:
+     *load balancer DNS --target group --instance
+     *whenever we hit the loadbalancer DNS in url. first it will search the target group and fetch the data from         
+      target instance.
+     *mind it if you deploy multiple applications in your target instance load balancer will fetch the first 
+      apllication from your server and deliver to the end user.
+     *before register specific target instance in to target group must have to disable default apache config file in target instance.
+
+Target group configuration:
+     *if you have http deplyment application in your target instance target group success code 200 is enough
+     *if you have https deplyment application in your target instance target group success code should be 200,301.
+     *if your caofiguration is mismatch then health check will be showing as unhealthy.
+   
+Listener:
+     *Listener is the key component of an Elastic Load Balancer
+     *Listener is a responsible for monitoring and managing incomming client connections to the ELB and 
+      routing those connections to the appropriate target instances based on rules you define.
+      
+Listener Configuration:
+     *Listener 80 configuration should be configure redirect to https url 
+     *Listener 443 configuration we can write rules as per our requirement
+            
+ACM:amazon certificate manager:
+     *it is freely provided by AWS
+     *if we use ACM no need to create 443 in server end 
+     *if we want subdomains for the same application we should create ACM with subdomaiin (ex:- *.domain.com)
+     *use the certificate and create rule in 443 listener end and update it DNS end (ex:-CNAME (subdomain) (ELB DNS name) )
+     *
+======================================================================================
+ASG:Auto Scaling Groups:
+     *primary goal of autoscaling is to ensure that your application high availability without manual help.
+     *when the application reaches thresold limit it will scale up and scale down the resources to keep application alive.
+
+types of policy:
+     *dynamic scaling
+     *it has three types
+       Target tracking policy
+       simple scaling 
+       step scaling
+       
+Target tracking policy
+     *it's automatically creating policy based on traffic scaleout and scalein without any further manual interruption.
+     *this policy completely managed by AWS management we only give threshold value when you want to enhance your capacity.
+     
+simple and step scaling
+     *both are same we need to select cloudwatch metrics and threshold value     
+     
+scale out: 
+     *add more target instances without manual effect
+     
+scale in:
+     *remove target instances when thresold limit downgraded    
+          
+Important things of ASG configuration:
+     *Template
+     *group size 
+     *threshold 
+     *cooldown time 
+     
+=======================================================================================
+DNS:-Domain Name Service
+      *DNS stands for domain name service
+      *DNS is a hirarical decentralized naming system 
+      *used to translate human readable domain name to ip addresses that computer can understand.
+      *it has two zones
+         ==>forward lookup zone 
+            *forward lookup zone resolves ip address to name
+         ==>reverse lookup zone
+            *reverse lookup zone resolves name to ip address
+      *world wide mostly used reverse lookup zone why because reverse lookup zone is the user friendly
+      *DNS port number is 53
+
+DNS Work Flow:-
+      *browser--->example.com--->o/s--->dns--->root server--->dns-->TLD server--->DNS--->nameserver--->DNS--->o/s--->browser
+
+ROUTE-53:-
+      *Amazon route53 is a highly available and scalable cloud domain name service 
+      
+A-RECORD:-Address
+      *A-record (it represents ipv4 address) it resolves domain name to ipv4 address
+    
+NS-record:-name server 
+      *NS-record it indicates which DNS servers are authoritative for perticular domain.
+ 
+C-NAME:canonical name 
+      *CNAME-record it provides an aliase for one domain name to another domain name
+
+TTL:- (time to live)
+      *how long it takes for record updates to reach your end users
+         
+MX-record
+      **MX-record specifies the mail server responsible for receiving emails on behalf of a domain
+      
+TXT-RECORD:
+     *TXT record used to store any text based information that can be grabbed when necessary.
+     *We most commonly see TXT records used to hold SPF(sender policy framework) data and verify domain ownership.
+   
+what are the routing policies
+     *simple
+     *weighted
+     *latency
+     *failover
+     *geolocation
+     
+simple routing:-
+Flow chart
+     *user-->route53-->load balancer-->ec2 ins which is hosted in one of region
+     *route53 will respond to DNS quries that are only in the record set 
+
+weighted:-
+flow chart
+                       ------------->region1
+                      | 75%
+     *user-->route53--|
+                      | 25%
+                       ------------->region2
+     
+     *lets you split yur traffic based on different weights assigned                  
+     *for application updation
+     
+latency:-
+     
+                        ------------->region1
+                      | 300m.s
+     *user-->route53--|
+       |              | 50 m.sec
+   user south africa    ------------->region2
+     
+     *allows you to route your traffic based on the lowest network latency for your end user  
+     *fastest way to reach the end user based on latency 
+     
+failover:-
+                       ------------->region1
+                      | active
+     *user-->route53--|
+                      | passive
+                       ------------->region2               
+     *in this routing by default all the requests are going to avtive region
+     *if suppose active region went down due to some problem route53 will pass the requests to passive region
+     
+geolocation:-
+=======================================================================================
+VPC (Virtual Private Cloud) 
+     
+     *create VPC (10.0.0.0/16)
+     *create subnets (public & private) in different availability zones 
+     *create internet gateway and attach it to the vpc
+     *create route table and and associate route table with appropriate subnets
+     *give internet access to public subnet via route table
+     *create public & private security groups, and configure who wants to access public and private subnets in inbound rules.
+subnet:-
+     *dividing large network into multiple equal small network is called subnets
+     *one goal of a subnet is to split a large network into a group of smaller interconnected networks to help minimize traffic.
+     
+internet gateway:-
+     *it is VPC component that allows communication between your vpc and internet.
+     *Internet Gateway (IGW) allows instances with public IPs to access the internet.
+
+Route Table:-
+     *intermediator between the subnet and internet gateway
+     *route table to control where network traffic to be directed 
+     *each subnet in your vpc must be associated with a route table 
+         
+NAT G/W:-
+     *stands for Network Address Translator 
+     *NAT Gateway (NGW) allows instances with no public IPs to access the internet
+     
+VPC peering:-
+     *VPC peering connection is a network connection between two VPC's. that enables you to route traffic between them using private ip address.
+     
+NetWorking:-
+
+n/w tools 
+
+ip address (internet protocol address) 
+     *it is address used to find system over the internet.
+     *ipv4 and ipv6
+    
+ipv4 
+     *32 bit address divided into 4 octets each octets contains 8 bit address
+     *8 bit address should be 0 and 1 binary formate
+    
+ipv6
+     *128 bit address divided into 16 octets each octets contains 8 bit address
+    
+what we need to find out in ip address 
+     *version *structure *range *size *subnet *class
+    
+ip classes
+     *class-A -->1 to 126 (1.0.0.0 to 126.255.255.255) subnet 255.0.0.0         
+     *class-B -->128 to 191 (128.0.0.0 to 191.255.255.255) subnet 255.255.0.0
+     *class-C -->192 to 223 (192.0.0.0 to 223.255.255.255) subnet 255.255.255.0
+     *class-D -->224 to 239 (224.0.0.0 to 239.255.255.255) subnet research and development 
+     *class-E -->240 to 254 (240.0.0.0 to 254.255.255.255) experimental
+    
+     *127.0.0.0 to 127.255.255.255 is reserved for loopback testing
+    
+pvt ip range 
+     *class-A -->10.0.0.0 to 10.255.255.255
+     *class-B -->172.16.0.0 to 172.31.255.255
+     *class-C -->192.168.0.0 to 192.168.255.255
+    
+public vs private ip address
+     *public ip address
+       ==>unique ip address
+       ==>anyone can access the machine through internet using public ip idress 
+    
+     *private ip address
+       ==>only limited peoples can access this private network devices 
+       ==>it is non-unique numeric code that can be reused by other private network devices 
+
+2tier vs 3tier 
+      *webserver/appserver + database
+      *webserver+appserver+database
+           
+decimal to binary conversion
+      *2 x 8 (2 power 8)
+
+      *192.168.29.5
+
+      1     2      4      8      16      32      64       128     -->255
+      
+      0     0      0      0       0       0       1        1      -->64+128 = 192   
+     
+      0     0      0      1       0       1       0        1      -->128+32+8 = 168
+     
+      1     0      1      1       1       0       0        0      -->16+8+4+1 = 29
+     
+      1     0      1      0       0       0       0        0      -->1+4 = 5
+  
+subnet 
+      *used to find nerwork and host bits
+      *dividing large network into multiple equal small network is called subneting
+     
+CIDR (classless inter-domain routing)
+      *using CIDR value we can customize the network as per the requirement
+      
+subnet ranges
+class-A:-
+      *n/w range 2 power 8
+      *host range 2 power 24
+
+class-B:-
+      *n/w range 2 power 16
+      *host range 2 power 16
+      
+class-C:-
+      *n/w range 2 power 24
+      *host range 2 power 8
+      
+      *in each subnet ranges first ip (10.20.15.0) reserved for network id and last ip (10.20.15.255) reserved for broadcast
+     
+=========================================================================================
+LAMBDA:
+     *AWS lambda function is a serverless computing service that lets you run code without managing the server 
+    
+     *Serverless
+     *Event-driven
+     *Supported Languages
+     *Pay-as-You-Go
+     *Scalable
+     *Integration
+     
+     
+=========================================================================================
+
+GIT (global information tracker) (source control management or version control management)
+     
+     *powerful and widely used version contrl system 
+     *commonly used for software development
+     
+git behaviour:-
+     *cvcs centralized version control system
+     *Dvcs distributed version control system
+     
+     *working folder-->staging-->local branch-->local repo(master)-->remote repo(git hub)
+                     |         |              |                    |
+                     |         |              |                    |
+                  git add   git commit      merge               git push (or) pull
+                  
+     *check git installed or not (git --version)             
+     *it it's not installed install it (apt install git) 
+     *go to working directory
+     *initiate git by (git init)             
+
+git config:-used for users commit log 
+     *git config --global user.name moorthi
+     *git config --global user.email ecemoorthi7@gmail.com
+git commands:-
+     *dev-->clone data from remote repo-->develope code in parent branch-->testing team test the code-->pull request-->merger code-->push to github-->deploy in live server through jenkins
+     
+     *first need to be in working folder
+     *git add filename (moving file from working folder to git staging area)
+     *check status (git status -s) 
+     *git commit -m "commit name" (committed file staging area to parent branch  
+     *merge code (git merge branch) (before merge must check log and present branch) (merge should do from master branch)
+     *create branch (git branch branchname)
+     *switch branch (git checkout branchname) 
+     *current branch (git branch) 
+     *git log (git log -s)
+     
+     *git clone remote repo url (get remote repo clone)
+     *git remote add (aliase name) (remote repo url) add remote repo in local and set aliase for url
+     *git push (aliase name) (master branch name)
+     
+merge conflict:-
+     *git config --global merge.tool vimdiff
+     *git config --global merge.conflictstyle diff3
+     *git config --global mergetool.prompt false
+     
+     *git mergetool 
+          ==>diffg RE   #get from remote
+          ==>diffg BA   #get from base
+          ==>diffg LO   #get from local
+                    
+virtualization:-
+     *file content will be changed based on branches
+     
+Head:-
+     *it will stand beside of last commit in the branch
+
+========================================================================================================================
+JENKINS:-
+     *Jenkins is an open source continuous integration and continuous deployment (CI/CD) automation software DevOps tool
+     *written in the Java programming language
+     * It is used to implement CI/CD workflows, called pipelines.
+     
+why jenkins used for:-
+     *Jenkins is still used in modern software development lifecycles                        
+     *It enables and automates various processes (such as testing, building, and development). 
+
+     *job
+     *build
+     *configure [we can edit]
+     *status and weather report (weather report will calculate last 5 build)
+
+Jenkins installation:-
+     *update repository and install openjdk
+     *apt install openjdk-11-jdk
+     *java --version
+Add GPG key:-
+     *wget -p -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+
+Add the jenkins package list in source.list.d fie.
+     *sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+     *apt-get update 
+Resolve the above GPG error using below command.
+     *sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5BA31D57EF5975CA
+update repository and install jenkins
+     *apt-get update 
+     *apt-get install jenkins
+     *systemctl start jenkins.service
+     *systemctl enable jenkins.service
+
+where does all the jobs store in jenkins server     
+     */var/lib/jenkins/workspace [jobs comes under the workspace folder]
+     *if we plan to deploy the code in remote server we will specify remote server path in job configurtion.
+     *by default whatever the job we run in master jenkins server all jobs comes under the /var/lib/jenkins/workspace folder.
+     
+how to change the default jenkins port number
+     */etc/default/jenkins (earlier it was changing in this file) 
+     */usr/lib/systemd/system/jenkins.service (we can change the default port number in this file)
+     
+     
+queuing of job:-
+     *post build-->build other project-->provide the job name
+     
+upstream/downstream:-
+     *i will be creating a job and i will be adding my job in postbuild action and automatically it is creating upstream and downstream level of jobs
+     *downstream job means simply what job executed from the current job builds 
+     
+Trigger:-
+     *periodic trigger (set cron schedule) 
+     *remote trigger 
+      http://18.179.15.92:8080/job/dev/build?token=12345  
+      
+user and role management
+     *role based authorization strategy (plugin
+     *
+     
+what is the use of master slave node configuration in jenkins
+     *By using the master-slave node configuration, you can effectively distribute and manage your build workload in Jenkins,
+      improving efficiency and resource utilization.
+     
+
+create two users
+    user1
+    user2
+    
+manage jenkins
+    
+    global roles
+    item roles
+    node role restric hardware level
+    
+    karthick ==>developer
+    kadhir   ==>tester
+    
+    /var/lib/jenkins/workspace [jobs comes under the workspace folder]
+
+Github with jenkins setup
+    *Github --> create personal access token in github with appropriate permission
+    
+    *jenkins -->create credentials in jenkins
+
+Jenkins configuration:-
+method-1:- 
+    <VirtualHost *:80>
+  ServerName domain
+        DocumentRoot /var/www/html
+  Timeout 600
+  ProxyTimeout 600
+        ProxyPreserveHost On
+        ProxyRequests Off
+        ProxyPass /.well-known !
+        ProxyPass / http://localhost:8080/  nocanon
+        ProxyPassReverse / http://localhost:8080/
+        AllowEncodedSlashes NoDecode
+</VirtualHost>
+
+Method-2:-
+    <Virtualhost *:80>
+    ServerName        playspredator.com
+    ProxyRequests     Off
+    ProxyPreserveHost On
+    AllowEncodedSlashes NoDecode
+ 
+    <Proxy http://localhost:8080/*>
+      Order deny,allow
+      Allow from all
+    </Proxy>
+ 
+    ProxyPass         /  http://localhost:8080/ nocanon
+    ProxyPassReverse  /  http://localhost:8080/
+    ProxyPassReverse  /  http://playspredator.com/
+</Virtualhost>
+
+enable modules:-
+    *a2enmod proxy
+    *a2enmod ssl
+    *a2enmod rewrite
+    *a2enmod proxy_http
+---------------------------------------------------------------    
+
+what are the plugins you have used in jenkins?
+how will you keep high availability of jenkins server?
+
+master slave configuration:
+  master ==>java,jenkins
+  slave  ==>java
+  
+what type of encryption algorithm r u using 
+  *RSA 
+
+delivary pipeline
+build pipeline
+build monitor
+
+difference between declarative and scripted pipeline
+
+
+===============================================================================================
+https://www.youtube.com/watch?v=Ma5zYSRZJYo
+
+First Day:-
+Docker:-
+      *Docker is used to run your applications instead of worrying about your librarries and dependencies 
+      
+Docker Components:-
+      *Docker File (instructions to create a image)
+      *Docker Image(AMI)
+      *Docker Container (Instance)
+      *Docker Hub
+           
+Hypervisior:-
+      *operating system-->vmware-->two different o/s
+      *installing two different o/s and while login select operating system which one you want to use
+    
+container:-
+      *Isolated enviraonment
+      *Hardware-->operating system-->Docker Engine-->container
+      *container id and name is unique
+      
+Difference B/w Virtualization and Container:-  
+      *instead of creating multiple o/s (virtual machine) using single o/s we can create multiple o/s images with the help of docker
+      *so memory is efficiency 
+      
+Commands:-
+      *apt-get install Docker.io (install docker in system)
+      *docker images (show installed images) 
+      *docker pull apache2 (install application) 
+      *docker ps (showing running container list) 
+      *docker ps -a (showing all running and stoped containers)
+      *docker run -itd -p "7070:80" apache2 (create container)
+      *docker run -itd -p "9090:80" apache2
+      *docker run -itd --name (name) -p "9999:80" apache2 (create container with specific name)
+      *docker exec -it container id /bin/bash (switch to specific container)
+      *docker stop container id (stop container)  
+      
+How to delete container:-
+      *before delete container first we should stop the container
+      *docker rm container id
+      *docker rm -f container id (delete container without stop)
+      
+How to delete image:-
+      *before delete image we should delete containers which are running by respective image
+      *docker rmi imagename (delete docker image)
+           
+How to convert container into image:-
+      *first create container using image 
+      *go inside the container (docker exce -it containerid executionshell)
+      *now install any packages (git,vim,mysql etc)      
+      *git commit containerid imagename:tag
+      *git images
+      
+how to save upgraded image locally:-
+      *docker save -o /usr/local/myimagebackup.tar imagename:tag
+      
+how to bring back deleted docker image:-
+      *docker load -i myimagebackup.tar 
+      
+how to push code to dockerhub:-
+      *docker login (then provide github credentialds)
+      *before pushing code to dockerhub set tag for the image (docker tag imagename tagname)
+      *docker tag myimage immithran/httpd_git_vim (tagname should be github account name)
+      *now check images (docker images) repository name will be different but image id will be same
+      *docker push newimage name (docker push iammithran/httpd_vim_git)
+      
+how to check docker logs:-
+      *docker logs (containerid or name) will show you the server logs
+      *docker inspect (containerid or name) will show you the container information
+      *docker top (container id or name) (check container task)
+      *docker stats (container id or name) (check specific container statistics)
+      *docker stats (shows all container statistics)
+      *
+
+https://www.youtube.com/watch?v=0OLutGAbmxE
+Second Day:-
+      *      
+
+
+===============================================================================================
+Prometheous:-
+
+     *apt-get update
+     *apt-get upgrade
+     *create user (sudo useradd -rs /bin/false prometheus)
+create folders     
+     *sudo mkdir /etc/prometheus
+     *sudo mkdir /var/lib/prometheus
+download and install prometheus 
+     *wget https://github.com/prometheus/prometheus/releases/download/v2.47.0/prometheus-2.47.0.linux-amd64.tar.gz
+     *sudo tar -xvf prometheus-2.47.0.linux-amd64.tar.gz
+     *sudo cp prometheus-2.47.0.linux-amd64/prometheus /usr/local/bin/
+     *sudo cp prometheus-2.47.0.linux-amd64/promtool /usr/local/bin/
+Create a Prometheus Configuration File:
+     *vim /etc/prometheus/prometheus.yml
+     global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+      
+Set Permissions:
+    *sudo chown -R prometheus:prometheus /etc/prometheus
+    *sudo chown -R prometheus:prometheus /var/lib/prometheus
+     
+Create a Systemd Service:
+    *sudo vim /etc/systemd/system/prometheus.service
+    [Unit]
+Description=Prometheus Monitoring System
+Documentation=https://prometheus.io/docs/introduction/overview/
+After=network.target
+
+[Service]
+User=prometheus
+ExecStart=/usr/local/bin/prometheus --config.file /etc/prometheus/prometheus.yml --storage.tsdb.path /var/lib/prometheus --web.console.templates /etc/prometheus/consoles --web.console.libraries /etc/prometheus/console_libraries
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+Start and Enable Prometheus:
+     *sudo systemctl start prometheus
+     *sudo systemctl enable prometheus
+
+Configure Firewall:
+     *sudo ufw allow 9090/tcp
+
+Install Node Exporter:
+     *Download Node Exporter:
+       wget https://github.com/prometheus/node_exporter/releases/download/VERSION/node_exporter-VERSION.linux-amd64.tar.gz
+     *select the version you want to download 
+       wget https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
+
+     *extract the downloaded file
+       tar xvfz node_exporter-*.tar.gz
+     
+     *Move the binary:
+       sudo mv node_exporter-*/node_exporter /usr/local/bin/
+
+     *Create a system user:
+       sudo useradd -rs /bin/false node_exporter
+ 
+     *Set ownership of the binary:
+       sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
+
+     *Create a systemd service file:
+        /etc/systemd/system/node_exporter.service
+        [Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/node_exporter
+
+User=node_exporter
+Restart=always
+
+[Install]
+WantedBy=default.target
+
+     *Reload systemd and start Node Exporter:
+       sudo systemctl daemon-reload
+       sudo systemctl start node_exporter
+     
+     *Enable Node Exporter to start on boot:
+       sudo systemctl enable node_exporter
+
+
+
+ 
+
+===============================================================================================
+DEVOPS:
+    *fastest delivary
+    *reduce time
+    *cost reduction
+    *profit up
+    *client satisfaction
+    *effort reduction
+    
+==============================================================================================
+is acm certificate necessary for load balancer?
+                                           
+vpc pearing?                                           
+vpc IG NAT cost reduce
+ip tracking?
+
+
+EFS
+nacl
+vpcpearing connections    
+
+===========================================================================================================
+OSI model:- (open system interconnection model)
+      *physical layer     (bottom)
+      *datalink layer
+      *network laer
+      *transport layer
+      *session layer
+      *presentation layer
+      *application layer   (top)
+      
+application layer:-
+      *it will decide what kind of service will be doing (http,ftp,mail etc) 
+      
+presentation layer:-
+      *data translation (converting into raw data like 0 and 1)
+      *data compression (
+      *data encryption  (encrypt data for security use)
+      *TLS/SSL (protocol)     
+
+session layer:-
+      *create and maintain session between two machines
+      
+transport layer:-
+      *port number will be decide based on service (http 80, https 443,ftp 21,etc)
+      *tcp,udp (protocols)
+      *data converted into segments
+      *added source port and destination port
+      *TCP:-
+          ==>sending data in an encrypted formate
+          ==>we will get acknowledgement for sending data
+          ==>reliable but slow
+          ==>file tranfer (using)
+      *UDP:-
+          ==>there is no acknowledgement for sending data
+          ==>fast and non-reliable
+          ==>live streaming,video call (using)    
+
+network layer:-
+      *data converted into packets
+      *it checks source and destination ip address       
+      *if both address in same network it will share the data without any difficult
+      *if both ip address in different network will send data vis router
+      *added source and destination ip address
+      
+Data Link Layer:-
+      *data converted into frames
+      *error checking (FCS) 
+      *added source and destination mac address       
+       
+physical layer:-
+      *converted frames into bits 0 and 1
+      *physical layer deals connection based
+      *LAN or copper wire ==>electrical signal 
+      *fiber optical cable==>light signal
+      *wifi               ==>radio waves
+      
+sending data:-
+      *top to bottom
+receiving data
+      *bottom to top
+      
+
+===========================================================================================================
+Types of Various Units of Memory
+      *Bit
+      *Byte      = 1024 bits
+      *kilo Byte = 1024 bytes
+      *Mega Byte = 1024 kilo bytes
+      *Giga Byte = 1024 Mega bytes
+      *Tera Byte = 1024 Giga bytes 
+      *Peta Byte = 1024 Tera Bytes 
+      *Exa Byte  = 1024 Peta bytes 
+      *Zetta Byte = 1024 Exa bytes
+      *Yotta Byte = 1024 Zetta bytes
+      
+===========================================================================================================
+Version Control:-
+      *s3
+      *Git/Github
+      *Bitbucket
+
+Monitoring:-
+      *Nagios
+      *Graphana
+      *prometheus
+      *Cloudwatch
+
+Automation:-
+      *Jenkins (CICD) -->java must     
+      *Ansible        -->python must
+      *Terraform (IAAS)
+
+Micro Services:-
+      *Kubernetes
+
+Containerization:-
+      *Docker
+
+Incident:-
+      *Jira     
+==============================================================================================================    
+CDN:- Content Delivary Network;-
+      *The application which is used CDN then all the w/s content cached in CDN servers in edge location.
+      *CDNs reduce the load on your main server and improve website performance,and
+      *response times for users is high in different edge(geographical) locations. 
+      *CDNs can also provide security features, like DDoS protection and Web Application Firewalls (WAFs),
+      *which helps protect websites from malicious attacks.   
+      
+DNS:- Domain name service:- 
+      *DNS is a hirarical decentralized naming system 
+      *used to translate human readable domain name to ip addresses that computer can understand
+      *it has two zones 
+	==>forward lookup zone 
+	==>Reverse lookup zone        
+      *Forward Lookup zone
+        ==>it resolves ip address to name
+      *Reverse Lookup zone
+        ==>it resolves name to ip address
+        
+DNS-domain name service:-
+    
+                                     ---------------->root server
+                                    |
+                                    |
+     *browser-->os-->dns resolver-->|---------------->TLD server
+                          |         |
+                      cached finally|
+                                     ---------------->name server
+                                             
+        
+DNS hirarchy 3 main level servers
+      *Root Server
+      *Top level domain server  (.com, .in, .org)
+      *authoritative nameservers
+      
+What is DNS record:-
+      *DNS records are used to store variouse types of information about a domain name.
+      *DNS records are managed by domain registrars or DNS hosting provider.
+
+Types of DNS records:-
+      *A-record (it represents ipv4 address) it resolves domain name to ipv4 address
+      *AAAA-record (it represents ipv6 address) it resolves domain name to ipv6 address
+      *CNAME-record it provides an aliase for one domain name to another domain name (we can create N nmbr of C-Name records for main 
+                                                         domain but not able to create C-Name record for sub-domain)
+      *MX-Mail Exchange record mail server responsible for receiving emails on behind the domain (mx-record has priority value)
+                                                         (mx-recoed value 10 and 20,10 is the highest priority and 20 lowest priority)
+      *NS-record it indicates which DNS servers are authoritative for perticular domain.
+      
+=======================================================================================
+Error Codes:-
+403 Forbidden:-
+      *permission or ownership issue.
+      
+404 Not Found:-
+      *This simply means that the requested file is not there.
+      
+500 Internal server error:-
+      *server misconfiguration error.   
+      
+503 service unavailable:-
+      *backend service issue 
+        
+
+=======================================================================================    
+ports:- 
+      *use of port is to establish a specific service connectivity over the network 
+      *20 ftp data port 
+      *21 ftp connection establish
+      *22 ssh
+      *25 SMTP
+      *53 DNS
+      *67 DHCP server side
+      *68 DHCP client side
+      *80 http
+      *443 https
+      *110 pop3
+      *143 IMAP
+      *3306 MYSQL
+      *2083 cpanel
+      *2087 WHM
+      *2049 NFS
+
+curl:-
+      *it is commnd line tool for check application health status 
+      
+ping:-
+      *it is used to check weather the perticular host is reachable across the network.
+         
+use of rsync:-
+      *    
+      
+    
+
+'Manage Jenkins' -> 'Security' -> 'Git Host Key Verification Configuration' and configure host key verification.
+    
+    
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     

@@ -1,0 +1,182 @@
+LAMP installation
+   *update repository(apt-get update)
+   *install apache (apt-get install apache2 -y)
+   *install mysql (apt-get install mysql-server -y)
+   *install php and and extensions (apt-get install php libapache2-mod-php php7.4-mysql php7.4-cli php7.4-curl php7.4-dev php7.4-fpm php7.4-gd php7.4-imap php7.4-mbstring php7.4-xml php7.4-xsl php7.4-zip) instead of php7.4 we can change the php version as per our requirement
+ 
+step-1 user level setup
+    *user creation (adduser username --disabled-password)
+    *download wordpress zip file (curl -O https://wordpress.org/latest.tar.gz )
+    *extract zip file (tar -xvf latest.tar.gz)
+    *create document root (mkdir /home/u.n/public_html)
+    *move wp files to document root (cp -r wordpress/* /home/u.n/public_html/ )
+    *create wp-config.php file under document root 
+    *copy wp-config-sample.php file to wp-config.php file
+    *change permission and ownership of documentroot and files (permission 755, ownership user)
+    
+step-2 mysql setup
+    *set mysql root password 
+      ==>go to mysql shel by type mysql
+      ==>check authentication methods for mysql users
+         *SELECT user,authentication_string,plugin,host FROM mysql.user;
+      ==>change root authentication to mysql_native_password
+         *alter user 'root'@'localhost' identified with mysql_native_password by 'newpassword'; (modify username and password)    
+      ==>exit and login again as a root user with password 
+    *create mysql user(create user 'u.n'@'%' identified by 'password';
+    *create database (create database databasename;)
+    *grant access to user to access database (grant all privileges on databasename.* to 'u.n'@'%' identified with 'password';)   
+    *flush privileges and exit;
+    
+    *go to wp-config.php file and set up the mysql database,user and password
+      below are the example
+        /** The name of the database for WordPress */
+        define( 'DB_NAME', 'eaglesslots_wp220' );
+      
+        /** Database username */
+        define( 'DB_USER', 'eaglesslots_wp220' );
+
+        /** Database password */
+        define( 'DB_PASSWORD', 'T[7R232@pS' );
+
+        /** Database hostname */
+        define( 'DB_HOST', 'localhost' );
+
+
+step-3 apache configuration    
+       *go to /etc/apache2/sites-available
+       *create vhost file end with .conf (ex:- example.conf)
+       
+sample setup for localdomain with apache default user
+    <VirtualHost *:80>
+           ServerName local.com
+           #serverAlias www.local.com
+           DocumentRoot /var/www/html/
+
+          <Directory /var/www/html>
+              Options -Indexes +FollowSymLinks
+              AllowOverride All
+              Require all granted
+         </Directory> 
+          ErrorLog /var/www/logs/error.log
+          CustomLog /var/www/logs/access.log combined
+     </VirtualHost>
+     
+    *if we are trying to setup localhost need to give entry in /etc/hosts file
+    Ex:-127.0.0.1 local.com 
+    
+    
+sample setup for public domain with apache default user
+       
+    <VirtualHost *:80>
+           ServerName example.com
+           #serverAlias www.example.com
+           DocumentRoot /var/www/html/
+
+          <Directory /var/www/html>
+              Options -Indexes +FollowSymLinks
+              AllowOverride All
+              Require all granted
+         </Directory> 
+          ErrorLog /var/www/logs/error.log
+          CustomLog /var/www/logs/access.log combined
+     </VirtualHost>
+             
+     *for local and default apache user based configuration no need to give user permissions to document root
+     *bcz if we use apache default document path apache user permission existing by default
+     *apache default user is "www-data"
+     
+sample setup for custom user with public domain                  
+     <VirtualHost *:80>
+           ServerName example.com
+           #serverAlias www.example.com
+           DocumentRoot /home/u.n/public_html/
+
+          <Directory /home/u.n/public_html>
+              Options -Indexes +FollowSymLinks
+              AllowOverride All
+              Require all granted
+         </Directory> 
+          ErrorLog /home/u.n/logs/error.log
+          CustomLog /home/u.n/logs/access.log combined
+     </VirtualHost> 
+     
+     *if we want to run the domain with specific port then go with below config
+     
+     <VirtualHost *:80>
+           ServerName example.com
+           #serverAlias www.example.com
+           DocumentRoot /home/u.n/public_html/
+
+          <Directory /home/u.n/public_html>
+              Options -Indexes +FollowSymLinks
+              AllowOverride All
+              Require all granted
+         </Directory> 
+         <FilesMatch \.php$>
+         SetHandler "proxy:fcgi://127.0.0.1:9001"
+         </FilesMatch>
+         
+          ErrorLog /home/u.n/logs/error.log
+          CustomLog /home/u.n/logs/access.log combined
+     </VirtualHost> 
+    
+    *now make fpm configuration under /etc/php/7.2/fpm/pool.d/
+    *before config make backup of default fpm config file
+    *create new file end with .conf and copy backup file to newly created file
+    
+        
+        
+        
+        
+        
+        
+    *run the command to check configfile before enabling it
+      ==>apache2ctl configtest
+    *config fine it's displying "sysntex ok"
+    *if configuration is error it will displaying the error then check error logs and fix issue.
+    *first disable the default apache config file 
+      ==>a2dissite 000-default.conf
+    *enable apache config file 
+      ==>a2ensite example.conf
+    *reload apache service 
+      ==>systemctl reload apache2.service
+      ==>service apache2 reload    
+    *best practice use to reload service don'y use restart option
+    
+    *apache server modules are (proxy_fcgi,ssl,rewrite,) 
+    *whenever you enable mobule restart the service 
+    
+wordpress credential setp 
+    *go to browser then type as domainname/wp-admin
+      ==>provide domain name 
+      ==>provide username 
+      ==>save password (it will give strong password by default)
+    *save username and password more carefully 
+      ==>provide mail address 
+      ==>select the check box
+      
+local host ssl setup
+     https://tecadmin.net/create-and-install-self-signed-certificate-in-apache/
+     https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-20-04                
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

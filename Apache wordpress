@@ -1,0 +1,194 @@
+WORDPRESS:
+<VirtualHost *:80>
+    ServerName local.emp.com
+    #serverAlias www.domain1.com
+    ServerAdmin webmaster@local.emp.com
+    DocumentRoot /home/emp-local/public_html/public/
+
+    <Directory /home/emp-local/public_html/public>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+       <FilesMatch \.php$>
+	SetHandler "proxy:fcgi://127.0.0.1:9001"
+       </FilesMatch>
+
+    ErrorLog /home/emp-local/logs/error.log
+    CustomLog /home/emp-local/logs/access.log combined
+</VirtualHost>	
+   
+====================================================================   
+WITH FPM
+
+root@vultrtest3:/etc/apache2/sites-available# cat gradeketecities.com.conf 
+<VirtualHost *:80>
+   ServerName gradeketecities.com
+   ServerAlias www.gradeketecities.com
+   DocumentRoot /home/vultrtest/gradeketecities.com
+  
+    <Directory /home/vultrtest>
+          Options -Indexes +FollowSymLinks
+          AllowOverride All
+          Require all granted
+    </Directory> 
+
+         <FilesMatch \.php$>
+         SetHandler "proxy:fcgi://127.0.0.1:9001"
+         </FilesMatch> 
+
+    ErrorLog /home/vultrtest/logs/sites.log
+    LogLevel Warn
+	RewriteEngine On
+	Redirect permanent / https://gradeketecities.com/
+</VirtualHost>
+
+<VirtualHost *:443>
+   ServerName gradeketecities.com
+   ServerAlias www.gradeketecities.com
+   DocumentRoot /home/vultrtest/gradeketecities.com
+  
+    <Directory /home/vultrtest>
+          Options -Indexes +FollowSymLinks
+          AllowOverride All
+          Require all granted
+    </Directory> 
+
+         <FilesMatch \.php$>
+         SetHandler "proxy:fcgi://127.0.0.1:9001"
+         </FilesMatch>
+SSLEngine on
+SSLCertificateFile /etc/letsencrypt/live/gradeketecities.com/cert.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/gradeketecities.com/privkey.pem
+SSLCertificateChainFile /etc/letsencrypt/live/gradeketecities.com/fullchain.pem
+
+    ErrorLog /home/vultrtest/logs/sites.log
+    LogLevel Warn
+</VirtualHost>
+============================================================================================
+WITHOUT USING FPM
+root@vultrtest4:~# cat /etc/apache2/sites-available/ricohtrivias.conf 
+<VirtualHost *:80>
+
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/html
+	ServerName ricohtrivias.com
+	ServerAlias www.ricohtrivias.com
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+#	RewriteEngine On
+	RewriteEngine On 
+ 
+	Redirect permanent / https://ricohtrivias.com/
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+<VirtualHost *:443>
+	ServerName ricohtrivias.com
+	ServerAlias www.ricohtrivias.com
+	DocumentRoot /var/www/html
+	<Directory /var/www>
+		Options FollowSymLinks
+		Allowoverride all
+		Require all granted
+	</Directory>
+	 SSLEngine on
+        SSLCertificateFile /etc/letsencrypt/live/ricohtrivias.com/cert.pem
+        SSLCertificateKeyFile /etc/letsencrypt/live/ricohtrivias.com/privkey.pem
+        SSLCertificateChainFile /etc/letsencrypt/live/ricohtrivias.com/fullchain.pem
+	Errorlog /var/www/logs/error.log
+#	CustomLog /var/www/log/access.log combined
+</VirtualHost>
+
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
+
+================================================
+
+install LAMP
+    *apt install apache2
+    *apt install mariadb-server
+    *apt-get install php libapache2-mod-php php-mysql php-cli php-curl php-dev php-fpm php-gd php-imap php-mbstring php-xml php-xsl php-zip
+    *curl -O https://wordpress.org/latest.tar.gz
+    *download wordpress by (curl -O https://wordpress.org/latest.tar.gz	
+    *extract zip file using tar 
+    *create the user without password (adduser vultrtest --disabled-password)
+    *move files to proper document root (/home/username/public_html)
+    *open mysql shell (sudo mysql)
+    *create database and username (create database databasename;),(create user 'uaername'@'%' identified by 'password';)
+    *and grant all privileges to access that perticula db for user (grant all privileges on database.* to 'user1'@'%';)
+    *open wp-config.php file edit database and user name accordingly (database,user,password)
+
+dissable the default config file
+    *a2dissite 000-default.conf
+ 
+enable the config file 
+    *a2enssite demo.conf
+       
+edit configuration file
+    *run the site name in browser and install the wordpress
+    *save password carefully
+
+configure php config file (take the backup of config.php file before editing)
+    *reload php service
+    
+enable module proxy_fcgi (by a2enmod)
+
+check port is listened or not by (netstat -tnplu) 
+
+for secure connection
+    *enable modules (rewrite,
+                      (ssl https)
+    *allow ports via firewall (ufw allow 80/tcp)               
+                               (ufw allow 443/tcp)
+                                   
+use of php
+   *stands for hypertext preprocessor
+   *PHP is the component of our setup that will process code to display dynamic content to the final user
+   
+use of php-mysql
+   *a PHP module that allows PHP to communicate with MySQL-based databases
+   
+use of libapache2-mod-php
+   *used to enable Apache to handle PHP files
+   
+use of php-fpm
+   *it is fastcgi processmanager
+   *allows you to run multiple php versions at a time 
+   *if you are looking to host your web application with optimal performance then php-fpm is best choice 
+
+curl o/p codes
+   *curl -i http://example.com for http 
+   *curl -I https://example.com for https
+   
+   *HTTP 200
+     standard status code for websites that are performing well
+     
+   *HTTP 301
+     This is the code for permanent redirects
+     
+   *HTTP 302
+     This code is for temporary redirects    
+
+=============================================================
+install certificate
+   *sudo apt install certbot python3-certbot-apache
+   *sudo certbot --apache
+   *service apache2 restart
+=============================================================
+
+	
+apt-get install php7.4 libapache2-mod-php7.4 php7.4-mysql php7.4-cli php7.4-curl php7.4-dev php7.4-fpm php7.4-gd php7.4-imap php7.4-mbstring php7.4-xml php7.4-xsl php7.4-zip 
+
+apt-get install php7.2 libapache2-mod-php7.2 php7.2-mysql php7.2-cli php7.2-curl php7.2-dev php7.2-fpm php7.2-gd php7.2-imap php7.2-mbstring php7.2-xml php7.2-xsl php7.2-zip 
+
+apt-get install php8.1 libapache2-mod-php8.1 php8.1-mysql php8.1-cli php8.1-curl php8.1-dev php8.1-fpm php8.1-gd php8.1-imap php8.1-mbstring php8.1-xml php8.1-xsl php8.1-zip
+
+
+
+
+
+
+

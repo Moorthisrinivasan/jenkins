@@ -1,0 +1,157 @@
+mysql notes:
+
+what is mysql
+==>MySQL is an Oracle-backed open source relational database management system (RDBMS) 
+   based on Structured Query Language (SQL). 
+   MySQL runs on virtually all platforms, including Linux, UNIX and Windows. ... 
+   MySQL is an important component of an open source enterprise stack called LAMP.
+==>MySQL is very friendly to PHP, the most appreciated language for web development.
+MYSQL:
+mysql installation
+    ==>sudo apt-get install mysql-server -y
+    
+how to secure mysql
+     ==>mysql_secure_installation
+
+how to change the mysql authentication parameter
+     ==>alter user 'root'@'localhost' identified with mysql_native_password by 'newpassword';
+      
+what is the command to check authentication methods for mysql users
+     ==>SELECT user,authentication_string,plugin,host FROM mysql.user;    
+     
+what is the command to check mysql password policy
+     ==>show variables like 'validate_password%';
+     
+what is the command to change mysql password policy       
+     ==>SET GLOBAL validate_password.policy = 0;   # For LOW
+     ==>SET GLOBAL validate_'password.policy = 1;   # For MEDIUM
+     ==>SET GLOBAL validate_password.policy = 2;   # For HIGH
+    
+what is the command to disable password validation component
+     ==>UNINSTALL COMPONENT 'file://component_validate_password';
+     enable password policy 
+     ==>INSTALL COMPONENT 'file://component_validate_password'; 
+      
+crate user 
+    create user 'username'@'localhost' (or) 'ip' (or) '%' identified by 'password';
+
+alter user password
+    alter user 'root'@'localhost' (or) 'ip' (or) '%' identified by 'password'; (we can modify user passwd according to user creation)
+
+create read only access for database to specific user;
+    GRANT SELECT, show view  ON demo.* TO 'demouser'@'%';
+
+user list                 
+    select user from mysql.user;
+
+drop user
+    drop user 'username'@'localhost';
+
+grant privileges
+    GRANT ALL PRIVILEGES ON database_name.* TO 'username'@'localhost';
+    flush privileges;
+
+show privileges			
+    show grants for 'username'@'localhost';
+
+create db
+    create databse dbname;
+show db
+    show databases;      
+drop database
+    drop database dbname;
+use db
+    use dbname;
+    show tables;
+
+view the replication user privilege
+    show grants for username
+
+view the mysql version
+    sudo mysqladmin version
+
+command for check current user
+     SELECT CURRENT_USER();
+
+command to check current database
+    SELECT DATABASE();
+    
+ view table
+    select * from wp_options;
+    
+update home and base url
+   UPDATE wp_options SET option_value='https://amplancepro.com' WHERE option_id=2;
+    
+==================================================================
+how to reset mysql root password:
+
+==>check the version of mysql
+   mysql --version		
+==>stop the mysql service
+   sysemctl stop mysql.service
+==>check the mysql status
+   systemctl status mysql.service
+==>skip grant tables ant networking
+   systemctl set-environment MYSQLD_OPTS="--skip-networking --skip-grant-tables"
+==>start the mysql service
+   systemctl start mysql.service
+==>check mysql status and login to the mariadb shell
+   systemctl status mysql.service
+   mysql -u root -p
+==>alter the root password	
+   first flush privileges;
+==>select the mysql database
+   use mysql;
+==>reset passwd using ALTER
+   ALTER USER  'root'@'localhost' IDENTIFIED BY 'the-new-password';
+   flush privileges;
+==>exit from mysql database
+     quit; or exit;
+==>kill all mysql processes and restart the mysql service
+   killall -u mysql
+   systemctl restart mysql.servie
+==>check recently set password working or not 
+   mysql -u root -p
+   provide newly set password
+
+without restart mysql service if we try to run mysql login shell 
+   ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2) 
+   we can get above error
+
+=====================================================
+How to access slave server mysql service from master server
+   *install mysql in both servers (master and slave )
+   *allow master server public ip in slave server security group.
+   *configure bind address in slave server file (/etc/mysql/my.cnf) 
+   *check slave server mysql connectivity from master (telnet slave server ip port )
+   *then connect from master to slave server mysql database (mysql -h hostname -u username -p)
+   *remember mysql user should have public permission 
+
+
+   
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

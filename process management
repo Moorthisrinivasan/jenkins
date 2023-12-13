@@ -1,0 +1,678 @@
+Linux:-
+    	*User Management
+    	*permissions (file permission/special permission/ACL)
+    	*Link File
+    	*RunLevel (Services and Daemon)
+    	*Directory Structure
+    	*Grep
+    	*Process Management
+    	*Package Management
+    	*Job Scheduler (cron)
+    	*Logs
+    	*Disk Management (partition creation,LVM and filesystem)
+    	*server Configuration Utilities Checking (CPU,Memory,Disk)
+    	*services (ssh,ftp,NFS,mailserver,Apache,Nginx,DNS)
+    	*Basic Networking
+   
+  
+linux architecture:
+    	*application-->shell-->kernal-->hardware
+    
+what is kernal
+    	*written in c-language 
+    	*kernel is system software which is part of o/s
+    	*intermediator between operating system (application) and hardware(acts as a driver b/w os and h/w)
+
+what is os:-
+    	*it is software that manages the hardware
+
+what is shell: 
+    	*it is operating system interface 
+    	*intermediator between the user and computer h/w
+    	*whatever the i/p user is giving shell transfer the i/p  to kernal 
+    	*kernal process on that input and gives o/p to the shell and shell displays o/p to the user
+    
+Linux booting process:-
+    	*booting is nothing but loading initial programe is called booting.
+    	*BIOS-->MBR-->GRUB-->kernel-->init-->Runlevel
+
+BIOS:-
+    	*basic i/p o/p system
+    	*bios checks system integrity (looks hardware health check)
+    	*and search the boot loader (MBR)
+    	*simple terms bios loads and execute the MBR boot loader
+    
+MBR:-
+    	*master boot record
+    	*located in the first sector of the bootable disk
+    	*once boot loader program detected then loaded in to the main memory.bios gives the cotrol to it
+    	*MBR loads and excecute the GRUB boot loader
+    
+GRUB:-
+    	*grand unified boot loader
+    	*if you have multiple kernel images installed in your system,you can choose which one to be executed.
+    	*grub displays the splash screen and wait for few seconds if you don't enter anything it loads the default kernal image.
+   	*just loads and execute the kernal and initrd images
+    
+KERNEL:-
+    	*kernal executes the /sbin/init program
+    	*since it was the first program to be executed by linux kernel                  
+   
+INIT:-
+    	*it is the first process in linux and it's process id is 1.init runs until the system shut down
+    	*stands for initialization
+    	*role of init is to create processes from script stored in the init configuration file (/etc/inittab)
+    
+Runlevel:-
+    	*mode of operation in computer operating system after boot
+=====================================================================================
+                
+what is user management 
+      	*user management is the process of managing different user accounts and their respective permissions in an operating system.
+types of users;
+      	*root or super user (it's administrator user it has all the privileges)
+      	*normal user(created by root user it has limited privileges)
+     	*system user(it'l created when application or software is installed in system)
+      
+important user administration commands
+USER:
+      	*cd .. (one step back)
+      	*cd - (go to previouse path)
+      	*!pid (execute the specific command with pid)
+      	*file (file or dir) ---->used to find what kind of files and dirs [ex:- setgid,stickybit etc]     
+     	*useradd (u.n) 
+      	*adduser (u.n) 
+      	*/etc/login.def users login default settings information taken from this file
+     	*adduser vultrtest --disabled-password create user without password     
+     	*userdel -r username (delete the user with user's home directory)
+     	*usermod -l (new user name) (old user name) change the user login name
+      	*/etc/passwd (users information file)(it has 7 fields u.n,passwd,uid,gid,comment,u.home dir,login shell.)
+     	*/etc/shadow (users passwd information file)(u.n,encrypt passwd,lastpassword changed,minimum,maximum,warn,inactive,expiry.)
+     	*passwd username (set user passwd)
+      	*passwd -d username (remove the passwd for the user)
+     	*usermod (options -u,-g,-c,-d,-s) modify the user according to requirement
+     	*sudo gpasswd -d (u.n)(g.n) drop the user from group
+     	*sudo usermod -aG groupname username ==>add user to the multiple groups
+      	*/etc/skel  -----> it is a dir stores users all environmental variables files and these are copied from 
+                         this dir to users home dir
+/etc/default/useradd 
+      	*whenever the user created user-default settings taken from this file                  
+      	*.BASH_LOGOUT==>uesrs logout ending program file.it will execute first wheenever the user is logout                       
+      	*.BASH_PROFILE==>users login startup program file.it will execute first whenever the user is login.
+                   it consists users environmental variables
+      	*.BASHRC==>this file is used to create the users custom command and to specify the
+                   umask values for that users only
+                     
+difference b/w useradd and adduser
+      	*home directory and login shell is the different
+adduser:-
+  	*home directory and /bin/bash shell will create by default
+ 	*/etc/adduser.conf
+      
+useradd:-
+  	*home dir not created /bin/sh will create       
+ 	*/etc/default/useradd
+ 
+GROUP;
+	*/etc/group (group information)
+      	*/etc/gshadow (group passwd information)
+      	*groupadd (g.n) create the group
+      	*gpasswd (g.n) set group passwd 
+      	*gpasswd -r (g.n) remove group passwd
+      	*usermod -g (g.n)(u.n) modify users groupname 
+      	*usermod -G (g.n)(u.n) add the user in group
+      	*usermod -aG (g.n)(u.n) add user to the multiple groups 
+      	*chgrp -R (g.n) (dir) modify the groupname for dir and inside the dir
+      	*chgrp (g.n) (dir/*) modify the groupname for all the files and dir in under the dir
+
+DIFFERENCE B/W SU AND SU -
+     	*su (u.n) switch to user without user home directory
+      	*su - (u.n) switch to user with user home directory
+
+TYPES OF GROUPS:
+     	*primary group(it'l create automatically when the user is created)
+   	*secondary group(it'l created maually by user)
+======================================================================================================================
+                      FILE PERMISSION
+PERMISSIONS:
+      	*linux is a multi user operating system.uses permissions and ownership for security purpose
+     	*777(default permission of directory)
+      	*666(default permission of file)
+
+UMASK:
+      	*user file-creation mode mask 
+      	*umask will define the permissions for newly created file or directories 
+      	*it's 4 digit octal number 
+      	*0002(normal user default umask value)
+      	*0022(root user default umask value)
+      	*umask(present the current user umask value)
+      	*umask 444(we can custamize the default umask value) 
+      	*4(read) without read permission you can't list anything in the path 
+      	*2(write) without write permission you can't create any files and foldres
+      	*1(excecute) if not execute permission you can't enter the dir even you have the ownership of the dir
+      	*if we want to move or copy files from one location to other location need read and execute permission for the dir.
+      
+      	*chmod (permission) (file or dir) change the permission
+      	*chmod -R (permission) (dir/*) change the permission for directory and inside all the files and dir
+                 
+ 
+     	*chmod permissions dir/*---------------->to set permissions at a time to all files and dirs under the dir
+                                                                              
+     	*chmod -R permissions (dir)-------------->to set same permissions for dir and inside all the files and dir
+                                                                
+WHAT IS USER
+     	*the one who manage the system is called user
+     	  
+WHAT IS GROUP:
+     	*collection of users is called group
+
+WHAT IS OTHERS:
+     	*not user and not part of a group
+      
+CHOWN:
+     	*stands for change ownership 
+     	*used to completely change the ownership for user 
+
+SPECIAL PERMISSIONS:-
+Setuid:
+     	*if we plan to allow normal user to excecute specific root user command we can go for set uid
+     	*set uid (if we plan to allow normal users to excecute root user commands then we can go for set uid)
+      	*it can be applied for user level and it can be applicable for files only
+          which (command) 
+          chmod u+s command path
+         
+setgid: 
+	*if we plan to allow all the users of one group to get the group ownership permissions then we can go for setgid
+      	*it can be applied for group level and it can be applicable for dirs only
+          mkdir /dir
+          chmod  777 /dir
+          addgroup (g.n)    
+          chgrp (g.n)(/dir) 
+          chmod g+s /dir
+          su - (u.n)
+          cd /dir go to the dir path 
+          create the files or dirs and check the group permissions
+       
+stickybit:
+	*it protect the data from other users when all the users having full priviledge on one directory 
+        *it can be applied for others level and it can be applicable for dirs only
+          mkdir /dir
+          chmod 777 /dir
+          chmod o+t /dir
+          su - (u.n)
+          cd /dir
+          mkdir dir 
+          exit from the user
+          su - (u.n) switch another user
+          cd /dir
+          mkdir dir
+          then check the utility
+
+ACL (access control system):
+  	*if we plan to give a user to access specific file or folder then we can go for ACL
+    	*we can find ACL file or folder by seeing + symbol in the file permission part
+      	*setfacl -m user:u.n:rwx /dir set acl for user to access folder
+     	*setfacl -Rm user:u.n:rwx /dir set acl for user to access including subdir
+     	*getfacl /dir check acl permission for folder       
+      	*setfacl -Rm group:g.n:rwx /dir set acl for group level
+      	*setfacl -x user:u.n /dir remove acl for user 
+      	*setfacl -x group:g.n /dir remove acl for group level          
+     	*setfacl -b /test remove complete acl access for the dir
+      	*setfacl -Rb /test remove complete acl access for the dir and inside the dir all files & dir
+      
+=================================================================================================
+                       VI-EDITOR
+             
+  	*this is command mode editor for files.
+  	*other editors in linux are emacs,gedit
+  	*vi editor is most popular 
+IT HAS THREE MODES:
+	*insert mode (i)  [ we need to add anything on the document insert mode "i" will support us]
+  	*command mode (esc) [when we start the vi -editor it has command mode]
+  	*executive mode (esc+shift+:)if we want to change anything on the document the execute mode 
+                                                                               will support us 
+  	*w (save)
+  	*q (quite)
+  	*yy (yanked) 5yy (copy selected lines)
+  	*dd (delete) 5dd (delete selected lines)
+  	*:wq save and exit
+  	*:q!  without save and exit
+  	*u (undo all previous typeing before saveing the file)
+  	*ctrl+R (redo previouse all type)
+  	*esc: setnu (to sort the file for number wise)
+  	*esc:/search string (used to search required string)
+  	*esc+gg  (go to end of the line)
+  	*esc+shift+gg (go to start of the line)
+  	*esc:15  (go to N nmber of line)
+  	*esc:%s/search string/replace string ( at a time to change the identicle words for entire file)
+	*esc:%s/search string/repalce string/gi (used to change insensitive words globally on the file)
+        *esc:%s/search string/repalce string/i (used to change the case insensitive words on the file)
+=================================================================================================          
+                     DIR STRUCTURE
+                     
+       */bin    ----->it contains normal users all binary commands
+       */sbin   ----->it contains system users all binary commands
+       */etc    ----->it contain all configuration files.if we install any package on the system 
+                      that confi file store .conf formate under /etc dir
+       */dev    ----->it has all device files (like hardisk,cpu,memory)information
+       */proc   ----->it contain all process info.virtual file system to kernal
+                     whatever the applications we need we can get from /proc
+       */var    ----->it contain all log file information.since when the system start untill the system down 
+                      in between time whatever the process runs on the system that log files everything stored /var
+       */tmp    ----->basically it has full privilege.whatever the temproary files created that everything stored in /tmp
+       */usr    ----->it has user program.it will acces /bin binary commands and /sbin binary commands       
+       */home   ----->it contains all the users home dir info
+       */lib    ----->it contais all the applications and systems lib info.
+       */opt    ----->it contain third party app info
+       */mnt    ----->by default this is empty dir.if we like to mount any file system we can use this file
+       */media  ----->if we connect any external storage device that external storage device info contain
+       */boot   ----->it contain all bootable file information.[grep-kernal-driver-initrd]
+       
+==============================================================================================
+                    FILE SYSTEM
+       *File system is a crucial component of a operating system 
+       *it's is responsible for storing and organizing data on a disk.                   
+File system types:-
+       ext2:- doesn't have journaling feature [single file size can be 2TB, maximum file size can be 16TB]	
+       ext3:- supports journaling feature [single file size can be 2TB, maximum file size can be 16TB]
+       ext4:- it is default f.s used by many modern linux distributions, it is also supports journaling 
+                                          [single file size can be 16TB, maximum file size can be 50TB]  
+       XFS :- high-performance file system. it supports f.s upto 16EB.it supports advanced features such as journaling, file-level encryption, and online defragmentation. 
+       
+what is journaling:-
+       * journaling feature reduce the risk of data loss after a system crash.
+       * so we can retrive the data even after system crash  
+       
+Types of Various Units of Memory
+      *Bit
+      *Byte      = 1024 bits
+      *kilo Byte = 1024 bytes
+      *Mega Byte = 1024 kilo bytes
+      *Giga Byte = 1024 Mega bytes
+      *Tera Byte = 1024 Giga bytes 
+      *Peta Byte = 1024 Tera Bytes 
+      *Exa Byte  = 1024 Peta bytes 
+      *Zetta Byte = 1024 Exa bytes
+      *Yotta Byte = 1024 Zetta bytes
+                     
+
+==============================================================================================
+                    SERVICES AND DAEMON
+
+       *ssh   ------------------->stands for secure shell 
+                                communicate b/w two machines
+                                port nmbr is 21.trnsfer the data in an encrypted formate
+       */etc/inittab------------->contains information about runlevels
+                                conventitionally 7 run levels exists nmbered from 0 to 6
+       *who -r (or) runlevel----->to check runlevel
+       *init 0    --------------->system hault
+       *init 1    --------------->single user mode (trouble shooting purpose)
+       *init 2    --------------->multiuser without NFS
+       *init 3    --------------->multiuser with NFS
+       *init 4    --------------->unused (for r&d purpose)
+       *init 5    --------------->graphical user (for desktop user)
+       *init 6    --------------->reboot the machine
+
+AFTER SET THE RUNLEVEL MUST IMPORTANT TO REBOOT THE SYSTEM(INIT 6)
+FOR RHEL-6
+       *vi /etc/initttab  ----->go to config file and change the runlevel.
+                              in RHEL-6 no other way to change the runlevel 
+FOR RHEL-7
+       *RUNLEVEL-3 ------------>systemctl set-default multi-user.target
+       *RUNLEVEL-5------------->systemctl set-default graphical.target
+==============================================================================================     
+                          LINK FILE   
+two types of links
+       *(1)hard link -------> only for files (ln filename linkname)
+       *(2)soft link ------->both files and directories (ln -s filename linkname)
+
+HARD LINK 
+       *nothing but backup file
+       *inode nmbrs are same if we lose original file we can get the original data from link file
+       *it will applicable only for files
+
+SOFTLINK 
+       *nothing but shortcut file. leading bit start with "l".by default softlink has full permission
+       *inode nmbrs are different bymistake if we delete origininal file.not able to retrive the losing data
+       *it will applicable both files and directories
+      
+=============================================================================================
+		COMPRESSION utilities
+ 
+HOW TO INCREASE DISK SPACE
+       *by using du -sh command 
+       *it will display all the directories are how much disk using
+       *and check which dir has more disk 
+       *afterthat you can increase the disk space in two ways
+       *(1) go to under the dir and check which file has bigger one and then compress on the file using "gzip" command
+       *(2) either you can compress on the dir by using "tar"command
+FOR FILES:
+       *gzip filename ------------> to compress the file
+       *gunzip f.n.gz------------->uncompress the file
+       *zcat f.n.gz -------------->to view the compressed file
+       *gzip -c filename > /tmp/moorthi.gz ---->compress and save the compressed file with different name and different path
+FOR DIRECTORIES:
+       *du -sh    -----------------> used to check disk space
+       *tar -czvf (destination path) (directory)==>to compress the directory [root@master ~]# tar -czvf /laptop/etc.tar /etc/
+       *tar -xvf (directory.tar)=====>extract the compressed directory     
+       *tar -tvf (directory.tar)======>to view compressed directory
+      
+=============================================================================================
+                       LOG FILES
+
+PACKAGE:rsyslog
+CONFIG FILE: /etc/rsyslog.conf
+PORT NO:514
+  
+	* it contains log messages about system.including kernal,service and applications running on it.
+	* it is very useful to trying troubleshoot anything on the system
+	* almost all log messages are stored in /var/log dir
+	* only root user can read these log messages
+	* we can use more or less commands to read these messages
+	* the messages will be generated only when the "rsyslog" service is running
+	* otherwise the log messages will not be generated
+
+	* /VAR/LOG/MESSAGES --->the system all log messages comes under this file
+	* /VAR/LOG/SECURE  ---->user log messages are comes under the file
+	* /VAR/LOG/CRON   ----->cron logs are contain
+	* /VAR/LOG/YUM.LOG----->packages logs are comes under this fis file 
+============================================================================================
+                 GREP - global regular exprression print
+       *it is used to search word or sentence from the file 
+       *it's filter like 
+       *to scan a document and present the result in a formate you want 
+    
+==> cat (filename) |grep (word)
+                    grep ^"word" -->start with
+                    grep "word"& -->end with
+                    grep -i word ->case sensitive and insentive
+                    grep -v word ->vomit
+                    grep -v WORD ->vomit
+                    grep -iv WORD ->vomit case sensitive and insensitive
+                    grep -A2 word ->after two lines
+                    grep -B3 word ->before three words
+                    egrep "^word|^word" ->start with two different cases
+                    egrep "^word|word&  ->start with and end with
+
+       *grep word (filename) 
+       *grep ^word (filename) -->start with
+       *grep word& (filename) -->end with
+       *grep -i word (filename) ->case sensitive and insentive
+       *grep -v word (filename) ->vomit
+       *grep -v WORD (filename) ->vomit
+       *grep -iv WORD (filename) ->vomit case sensitive and insensitive
+       *grep -A2 word (filename)->after two lines
+       *grep -B3 word (filename)->before three words
+       *egrep "^word|^word" (filename) ->start with two different cases
+       *egrep "^word|word& (filename) ->start with and end with
+============================================================================================
+what is process management
+       *tuening or controlling a process is called process management
+       *set of instructions which excecutes in the memory.
+       *processes will be created in the memory when program or command is excecuted.
+       *every process is identified by unique no of pid.
+       *the linux kernal is used to communicate with the processes by their pid's 
+      
+what is deamon
+       *daemon is the process running in the background 
+       *these are handled by the system 
+      
+types of process	
+       *background process
+       *forground process
+
+Forground Process:-
+       *it's type of process that's running directly in the forground using gui or cui 
+       *this type of process initiated or executed by the user intervention 
+       *ex:-needs certain i/p from the user and gives some o/p on the screen.
+       
+      *disadvantage no one can use terminal until complete the process 
+                      
+what is the system first process
+       *RHEL-6 (initd)
+       *RHEL-7 (systemd)
+       *initd or systemd process is the parent process to all the processes in linux system.
+       *it's the first process which gets started by the kernal at the time of booting
+       *it's pid is 1 
+       
+commands to see or manage the processes
+       *ps  (snapshot of the current status of the processes.it will give only one terminal information not all the terminal information)
+       *top (we can monitor the processes continusely by default every 3 seconds it will display the data)
+       *htop 
+       
+what is the parent process
+       *the process which starts or create another process is called parent process
+       *parent process in identified by the (PPID)
+what is child process
+       ==>
+     
+what is niceness:-
+       *way to assigning priority to the running processes on the system. 
+       
+       
+===================================================================================
+cron job:
+      *cron is the command line utility 
+      *it's job scheduler
+      *cron jobs can be very useful to automate repetitive tasks       
+fields:
+      *minutes (0-59)
+      *hours (0-23)
+      *DOM (1-31)
+      *MOY (1-12) (0=none and 12= december)      
+      *DOW (0-7) (0&7 = sunday)
+      *command to excecute (ex:- /home/user/script.sh)
+      *output (path to save ex:- >/dev/null/filename
+      *restart the cron service /etc/init.d/crond restart
+      
+      https://crontab.guru/
+      
+new relic
+      *https://docs.newrelic.com/docs/infrastructure/install-infrastructure-agent/linux-installation/install-infrastructure-monitoring-agent-linux/#ubuntu-update-repo      
+      
+=================================================================================    
+server side commands
+      *sudo lsb_release -a ==>to view the o/s version (ubuntu)
+      *cat /etc/redhat-release==>to view the o/s version (centos)
+      *ssh -p (port number) (u.n)@(ip)
+      *ssh -i (pem.key) (u.n)@(ip)
+      *scp -P 55000 eaglesslots@111.90.140.94:/home/eaglesslots/file .==>download file from server to local
+      *scp -P 55000 (f.n) (u.n)@(ip):path to save ==>upload file from local to server
+      *find ./ -name *.zip==>grep all files with .zip
+      *netstat -tulpn==>to see the all open ports info
+      *curl http://icanhazip.com (check servers public ip )
+      *sudo find / -name file or dir name ==>to identify the file or dir location 
+      *which command name ==>to find the path for file
+      *echo "content" | tee -a (f.n) ==>adding the content to the existing file
+      *rsync -e "ssh -i gtext-data-node.pem" -av /root/vinod.txt  gtext-data-node@34.168.132.28:/home/gtext-data-node
+      *file (file or dir) ==>we can find weather it is file or dir
+      *ll---used to list the all files and directories including hidden files
+      *history -d -100—1 ==>command to delete history
+      *du /|sort -k1 -n  ==>check inode files size 
+      
+=================================================================================
+package management
+      *apt-get update (update repositor)
+      *apt-get upgrade (it'll install newest version of all packages currently installed) 
+      *apt-get install (package name) (install package)
+      *apt-get upgrade (package name) (installing newest version of already installed package)
+      *cat /var/log/dpkg.log (we can get package logs in this file)
+      
+      *apt-get remove (package name) (remove package)
+      *apt-get remove --purge (package name*) (remove package completely)
+      *rm -f /var/log/package name	
+      *rm -rf /var/lib/package name
+      *rm -rf /usr/share/package 
+      
+==================================================================================     
+SERVICE RESTART METHODS
+     */etc/init.d/service restart
+     *service servicename restart
+     *systemctl restart service
+================================================================================== 						
+server deploying commands:
+cpu utilizations
+    *top then press 1   1st cpu represent processor0
+                        2nd cpu represents processor1
+                        3rd cpu represents processor2
+    *cat /proc/cpuinfo
+    *sar -u
+    *lscpu
+    
+load average:
+     *uptime  ==>1st-min,5th-min,15th-min 
+                 when the system is up
+                 how long the system is running
+                 how many users are currently logged i 
+     *top
+
+	
+=================================================================================																
+memory utilization:
+    *top
+    *cat /proc/meminfo
+    *sar -r
+     sar -r 2
+     sar -r 2 5
+    *free -m
+    
+cache memory removed command
+     *echo "3" >/proc/sys/vm/drop_caches
+
+SWAP:
+     *cat /proc/sys/vm/swappiness==>we can get sawppiness value
+     *part of hard disk 
+     *nothing but virtual memory
+     *when the physical memory is high at the time it will take to use swap memory 
+     *when you don't have enough space on your system at the time
+     *take portion of harddisk from your storage.
+     *then convert physical memory to swap momory
+ swappiness:
+     *when the perticular percentage of phyical memory utilized 
+     *it will be started to using perticular percentage of swap memory
+            
+===========================================================================================
+disk utilization:
+     *lsblk
+     *fdisk -l
+     *df -hT
+     *du -sh dir (or) file name
+     *sar
+     
+     *By clearing temproary files also we can increase the some amount of disk space in server      
+     
+how to check weather the filesystem exist or not for volumes
+     *file -s volumename(/dev/xvda1
+     *df -m --print-type
+     */etc/fstab
+     
+compression utilities
+     *we are using compression utilities for maintaining a disk utilization in a server
+
+ZIP:-applicable for both files and dirs
+     *gzip (f.n) zip file
+     *gunzip (f.n.gz) extract file
+     *zcat (f.n.gz) view zipped file 
+     *zip -r (dir.zip) (dir) zip the dir
+     *unzip (dir.zip) extract the dir 
+     *unzip -l (dir.zip) view the zip file content without extracting
+        
+TAR:-applicable for dirs only
+     *tar -czvf (folder.tar.gz) (dir) zip folder
+     *tar -xvf folder.tar.gz   extract the zip archive
+     *tar -xzvf folder.tar.gz view zipped folder
+         
+========================================================================================      
+ssh access for specific user 
+     *create user using (useradd -m (u.n) )
+     *change the login shell /bin/sh to /bin/bash
+     *create ssh key (ssh-keygen) now under the user .ssh dir will create
+     *go to .ssh and create authorized_keys file
+     *copy public key to authorized_keys
+     *go to remote server and create file as (u.n.pem)
+     *convert pvt key to pem file
+     *now we can access specific user with remote server
+   
+another method:-
+     *mkdir .ssh
+     *cd .ssh
+     *ssh-keygen -b 2048 -t rsa -f devsocleads
+     *touch authorized_keys
+     *cp devsocleads.pub authorized_keys
+     
+passwordless login:-
+     *create ssh key from the master server
+     *then copy the public key to slave server (which user you want to access) authorized_keys
+     *connect slave server from master
+     *ssh u.n@remote server ip
+  
+========================================================================================
+process of application issue checking:-
+      *first check n/w and server connectivity by using (ssh or ping)
+      *then check backend service status by using netstat
+      *check application health status using curl 
+      *check system resource utilization disk,cpu,memory
+      *above all are good then check server billing status
+      
+server upgrade process:-
+      *server upgrade will be depending on the organization and it's need.
+      *performance improvement
+      *capacity scaling
+      *Enhanced security
+      
+      *server upgrade==>operating system upgrade (Ex:- ubuntu20.04 to ubuntu 22).
+        ==>run application with advance feauture and protect application from vulnerble.
+        ==>because older version of o/s becomes unsupported by the software and firmware updates.
+      *packages or service upgrade ==>(Ex:- php7.2 to php7.4).
+        ==>if we want to run or develope application with new version then we can go for this feauture.
+      *Resource upgrade  ==>disk,cpu,memory.
+        ==>if we want to run application with faster performance more efficient and to control overload of the server.
+        
+========================================================================================
+Environment Architecture
+      *requirement analysis-->system design-->implementation-->testing-->deployment-->maintenance
+      
+Environment stages
+      *staging 
+      *development
+      *testing
+      *preprod 
+      *production    
+
+========================================================================================
+day to day activities:-
+      *monitoring servers using graphana nagios tool
+      *checking servers Billing status and contacting the payment team via mail & internal chatting tool.
+      *Managing server setup based on project
+      *handling web hosting using namecheap,cloudflare and cpanel based on requirement like wp formate (or) HTML formate
+      *managing domain DNS pointing
+      *managing application deployments and migration projects
+      *managing automate tasks cron
+      *have standup call everyday start of the day and end of the day. 
+      
+
+self intro:
+      *myself moorthi
+      *i am ------------ experianced linux administartor 
+      *i'm working at so and so company
+      
+      *basically i'm coming from Krishnagiri TamilNadu 
+      *at present residing in Bommanahalli,Banglore.
+      
+brief intro:-
+      *Myself Moorthi
+      *i'm ------------ experianced linux administrator
+      *i'm working at so and so company
+      
+      *basically i'm coming from krishnagiri,TamilNadu
+      *at present residing in Bommanahalli,Banglore
+      
+      *i did my DECE (Diploma in Electronic and Communication Engineering In the year of 2016.at government polytechnic clg krishnagiri,TamilNadu. with firstclass with distinction) 
+      *i did my higher secondary education in the year of 2013 at (GHS) krishnagiri,tamilnadu
+       
+       
+     
+       
+       
+       
+              
